@@ -1,13 +1,11 @@
 package com.example.demo.java8;
 
-import com.example.demo.servlet.User;
-import org.springframework.util.Assert;
+import com.example.demo.servlet.UserTest;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -20,30 +18,30 @@ import java.util.stream.Collectors;
 public class lambda {
 
     public static void main(String[] args) {
-        List<User> list = new ArrayList<>();
-        User user = new User("12","34");
-        list.add(user);
-        list.add(new User("xz","34"));
-        list.add(new User("xl","22"));
-        list.add(new User("lh",null));
-        list.add(new User("lh","31"));
-        List<User> lis2 = new ArrayList<>();
-        list.add(new User("xz","34"));
-        list.add(new User("xl","1"));
-        list.add(new User("lh","24"));
-        list.add(new User("lp","31"));
+        List<UserTest> list = new ArrayList<>();
+        UserTest userTest = new UserTest("12","34");
+        list.add(userTest);
+        list.add(new UserTest("xz","34"));
+        list.add(new UserTest("xl","22"));
+        list.add(new UserTest("lh",null));
+        list.add(new UserTest("lh","31"));
+        List<UserTest> lis2 = new ArrayList<>();
+        list.add(new UserTest("xz","34"));
+        list.add(new UserTest("xl","1"));
+        list.add(new UserTest("lh","24"));
+        list.add(new UserTest("lp","31"));
 //        list.stream().filter(List::contains()).collect(Collectors.toMap(User::getUsername, Function.identity()));
 //        Assert.isTrue(list.size() == 3,"list数据不对");
-        Map<String, Map<String, List<User>>> collect = list.stream()
+        Map<String, Map<String, List<UserTest>>> collect = list.stream()
                 .filter(l ->!StringUtils.isEmpty(l.getPassword()))
-                .collect(Collectors.groupingBy(User::getUsername, Collectors.groupingBy(User::getPassword)));
+                .collect(Collectors.groupingBy(UserTest::getUsername, Collectors.groupingBy(UserTest::getPassword)));
         System.out.println("111111111");
 
 
     }
 
-    public  static String groupKey (User user){
-        return user.getUsername()+user.getPassword();
+    public  static String groupKey (UserTest userTest){
+        return userTest.getUsername()+ userTest.getPassword();
     }
 
 

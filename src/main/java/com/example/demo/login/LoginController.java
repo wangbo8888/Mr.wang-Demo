@@ -2,7 +2,7 @@ package com.example.demo.login;
 
 import com.example.demo.ThreadLocalService.ThreadLocalTest;
 import com.example.demo.annotation.MyAnnotation;
-import com.example.demo.servlet.User;
+import com.example.demo.servlet.UserTest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +25,7 @@ public class LoginController {
 
         @PostMapping(value = "/login{userName}")
         public String login (HttpServletRequest request,String userName){
-            User user = threadLocalTest.getThreadLocal();
+            UserTest userTest = threadLocalTest.getThreadLocal();
             String msg="登陆失败！";
 //            User user= userRepository.findByUserName(userName);
 //            if (user!=null && user.getPassword().equals(password)){
@@ -43,7 +43,7 @@ public class LoginController {
 
     @PostMapping(value = "/index")
     public String index (HttpServletRequest request){
-        User user1 = threadLocalTest.getThreadLocal();
+        UserTest userTest1 = threadLocalTest.getThreadLocal();
         String msg="首页内容";
         Object user= request.getSession().getAttribute("user");
 

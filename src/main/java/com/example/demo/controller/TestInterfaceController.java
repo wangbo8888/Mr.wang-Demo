@@ -13,4 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 public interface TestInterfaceController {
 
     public void test();
+
+    public void testMybatis();
 }

@@ -1,19 +1,19 @@
 package com.example.demo.ThreadLocalService;
 
 
-import com.example.demo.servlet.User;
+import com.example.demo.servlet.UserTest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ThreadLocalTest {
 
-     static ThreadLocal<User> threadLocal = new ThreadLocal();
-     public void setThreadLocal(User user){
+     static ThreadLocal<UserTest> threadLocal = new ThreadLocal();
+     public void setThreadLocal(UserTest userTest){
 
-        threadLocal.set(user);
+        threadLocal.set(userTest);
 //        threadLocal.remove();
     }
-    public  User getThreadLocal(){
+    public UserTest getThreadLocal(){
      return threadLocal.get();
     }
 

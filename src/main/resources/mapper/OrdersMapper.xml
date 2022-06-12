@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mybatis.mapper.OrdersMapper">
+    <resultMap type="com.example.demo.mybatis.dao.Orders" id="OrdersMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="uid" column="uid" jdbcType="INTEGER"/>
+        <result property="ordertime" column="ordertime" jdbcType="DATE"/>
+        <result property="money" column="money" jdbcType="DOUBLE"/>
+        <result property="ordetype" column="ordeType" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 通过ID查询单条数据 -->
+    <select id="queryById" resultMap="OrdersMap">
+        select
+            id,uid,ordertime,money,ordeType
+        from orders
+        where id = #{id}
+    </select>
+
+    <!--分页查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="OrdersMap">
+        select
+        id,uid,ordertime,money,ordeType
+        from orders
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="uid != null and uid != ''">
+                and uid = #{uid}
+            </if>
+            <if test="ordertime != null and ordertime != ''">
+                and ordertime = #{ordertime}
+            </if>
+            <if test="money != null and money != ''">
+                and money = #{money}
+            </if>
+            <if test="ordetype != null and ordetype != ''">
+                and ordeType = #{ordetype}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from orders
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="uid != null and uid != ''">
+                and uid = #{uid}
+            </if>
+            <if test="ordertime != null and ordertime != ''">
+                and ordertime = #{ordertime}
+            </if>
+            <if test="money != null and money != ''">
+                and money = #{money}
+            </if>
+            <if test="ordetype != null and ordetype != ''">
+                and ordeType = #{ordetype}
+            </if>
+        </where>
+    </select>
+
+    <!--新增数据-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into orders(id,uid,ordertime,money,ordeType)
+        values (#{id},#{uid},#{ordertime},#{money},#{ordetype})
+    </insert>
+
+    <!-- 批量新增数据 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into orders(id,uid,ordertime,money,ordeType)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id},#{entity.uid},#{entity.ordertime},#{entity.money},#{entity.ordetype})
+        </foreach>
+    </insert>
+
+    <!-- 批量新增或按主键更新数据 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into orders(id,uid,ordertime,money,ordeType)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id},#{entity.uid},#{entity.ordertime},#{entity.money},#{entity.ordetype})
+        </foreach>
+        on duplicate key update
+        id=values(id),
+        uid=values(uid),
+        ordertime=values(ordertime),
+        money=values(money),
+        ordeType=values(ordeType)
+    </insert>
+
+    <!-- 更新数据 -->
+    <update id="update">
+        update orders
+        <set>
+            <if test="id != null and id != ''">
+                id = #{id},
+            </if>
+            <if test="uid != null and uid != ''">
+                uid = #{uid},
+            </if>
+            <if test="ordertime != null and ordertime != ''">
+                ordertime = #{ordertime},
+            </if>
+            <if test="money != null and money != ''">
+                money = #{money},
+            </if>
+            <if test="ordetype != null and ordetype != ''">
+                ordeType = #{ordetype},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from orders where id = #{id}
+    </delete>
+</mapper>

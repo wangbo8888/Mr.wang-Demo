@@ -1,12 +1,10 @@
 package com.example.demo.annotation;
 
 import com.example.demo.ThreadLocalService.ThreadLocalTest;
-import com.example.demo.servlet.User;
+import com.example.demo.servlet.UserTest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -14,7 +12,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 
 @Aspect // 1.表明这是一个切面类
@@ -33,14 +30,14 @@ public class MyAnnotationAspect {
 
         @Before("@within(myAnnotation)")
         public String before(JoinPoint joinPoint,MyAnnotation myAnnotation){
-            User user = threadLocalTest.getThreadLocal();
+            UserTest userTest = threadLocalTest.getThreadLocal();
             log.info("进入aop了+++++++++++++++++++++++++++++++++++++"+myAnnotation.color());
             //获取注解上的方法
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
             Method method = methodSignature.getMethod();
             MyAnnotation annotation = method.getAnnotation(MyAnnotation.class);
 
-            return user.toString();
+            return userTest.toString();
 
     }
 

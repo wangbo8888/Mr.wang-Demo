@@ -23,12 +23,12 @@ public class LoginServlet extends HttpServlet {
         //1.把账号、密码分别设置为root、123
         if(username.equals("root")&&password.equals("123")){
             //2.创建User对象保存账号、密码
-            User user=new User();
-            user.setUsername(username);
-            user.setPassword(password);
+            UserTest userTest =new UserTest();
+            userTest.setUsername(username);
+            userTest.setPassword(password);
 
             //3.创建Session对象保存User对象
-            request.getSession().setAttribute("user", user);
+            request.getSession().setAttribute("user", userTest);
 
             //4.登陆成功跳转指定页面
             response.sendRedirect("/Project01/IndexServlet");

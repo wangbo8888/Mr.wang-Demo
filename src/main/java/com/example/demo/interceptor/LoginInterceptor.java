@@ -2,20 +2,15 @@ package com.example.demo.interceptor;
 
 import com.example.demo.ThreadLocalService.ThreadLocalTest;
 import com.example.demo.annotation.MyAnnotation;
-import com.example.demo.servlet.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.nashorn.internal.parser.JSONParser;
+import com.example.demo.servlet.UserTest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Mr.wang
@@ -30,10 +25,10 @@ public class LoginInterceptor implements HandlerInterceptor {
      @Override
      public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
          System.out.println("拦截器执行");
-         User user = new User();
-         user.setUsername("aaa");
-         user.setPassword("bbb");
-         threadLocalTest.setThreadLocal(user);
+         UserTest userTest = new UserTest();
+         userTest.setUsername("aaa");
+         userTest.setPassword("bbb");
+         threadLocalTest.setThreadLocal(userTest);
          HandlerMethod handlerMethod = (HandlerMethod) handler;
          MyAnnotation methodAnnotation = handlerMethod.getMethodAnnotation(MyAnnotation.class);
          if(null == methodAnnotation){
