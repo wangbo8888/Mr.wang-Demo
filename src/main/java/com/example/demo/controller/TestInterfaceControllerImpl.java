@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.Convert.ClassA;
 import com.example.demo.Convert.ClassB;
 import com.example.demo.Strategy.CreateService;
-import com.example.demo.mybatis.dao.User;
 import com.example.demo.mybatis.mapper.UserMapper;
 import com.example.demo.mybatis.result.ListVo;
 import com.example.demo.servlet.UserTest;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class TestInterfaceControllerImpl implements TestInterfaceController {
     @Resource
-    private Map<String,CreateService> createServiceMap;
+    private Map<String, CreateService> createServiceMap;
     @Resource
     private UserMapper userMapper;
 
@@ -36,16 +35,17 @@ public class TestInterfaceControllerImpl implements TestInterfaceController {
     @Override
     @PostMapping("/test")
     public void test() {
-        UserTest userTest = new UserTest("123","34");
+        UserTest userTest = new UserTest("123", "34");
         log.info("本次的用户是{}", userTest);
         createServiceMap.get("POS").createOrder();
         List<UserTest> userTestList = new ArrayList<>();
         List<UserTest> userTestList1 = new ArrayList<>();
         ClassA classA = new ClassA();
         ClassB classB = new ClassB();
-         userTestList1.stream().map(TestInterfaceControllerImpl::build).collect(Collectors.toList());
+        userTestList1.stream().map(TestInterfaceControllerImpl::build).collect(Collectors.toList());
 
     }
+
     @PostMapping("/testMybatis")
     @Override
     public void testMybatis() {
@@ -56,7 +56,7 @@ public class TestInterfaceControllerImpl implements TestInterfaceController {
 
     }
 
-    public static UserTest build(UserTest userTest){
+    public static UserTest build(UserTest userTest) {
 //        user.setUsername(a.getUsername());
 //        user.setPassword(b.getPassword());
         return userTest;
