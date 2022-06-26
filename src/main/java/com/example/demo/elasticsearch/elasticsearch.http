@@ -3,3 +3,7 @@ POST http://localhost:8080/es/testes
 
 ###
 POST http://localhost:8080/es/select
+
+
+###
+POST http://localhost:8080/es/selectTermList

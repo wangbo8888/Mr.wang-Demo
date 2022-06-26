@@ -3,8 +3,13 @@ package com.example.demo.elasticsearch;
 import com.example.demo.elasticsearch.entity.EsDemo;
 import com.example.demo.elasticsearch.repository.DemoRepository;
 import com.example.demo.util.IdUtils;
+import org.apache.lucene.search.BoostQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.BoostingQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -145,11 +150,37 @@ public class ElasticSearchController {
         typeQuery.should(getProhibitQuery());
         typeQuery.should(getAllowedQuery());
         boolQueryBuilder.must(typeQuery);
+//        BoostingQueryBuilder weightQuery = QueryBuilders.boostingQuery(QueryBuilders.termQuery("watchList",1),);
+        //FunctionQuery 函数权重
+        FunctionScoreQueryBuilder.FilterFunctionBuilder[] filterFunctionBuilders = new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.termQuery("watchList", 1), ScoreFunctionBuilders.weightFactorFunction(100)),
+//                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.termQuery("type", 2), ScoreFunctionBuilders.weightFactorFunction(1)),
+//                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("type", 1), ScoreFunctionBuilders.weightFactorFunction(1))
+        };
+//        String scoreScript = "if (doc['watchList'].value == 1) {" +
+//                "   return 100;" +
+//                "} else {" +
+//                "   return 1;" +
+//                "}";
+
+        FunctionScoreQueryBuilder functionScoreQueryBuilder =
+                QueryBuilders.functionScoreQuery(
+                        boolQueryBuilder,
+                        filterFunctionBuilders
+//                        QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("watchList", 1)),
+                        //脚本分数
+//                        ScoreFunctionBuilders.scriptFunction(new Script(scoreScript))
+                        //提升权重
+//                        ScoreFunctionBuilders.weightFactorFunction(5)
+                );
+        SortBuilder scoreBuilder = SortBuilders.fieldSort("_score").order(SortOrder.DESC);
         SortBuilder sortBuilder = SortBuilders.fieldSort("createDate").order(SortOrder.DESC);
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-                .withQuery(boolQueryBuilder)
+//                .withQuery(boolQueryBuilder)
+                .withQuery(functionScoreQueryBuilder)
                 .withAggregations(AggregationBuilders.terms("date").field("createDate"))
                 .withPageable(PageRequest.of(0, 10))
+                .withSorts(scoreBuilder)
                 .withSorts(sortBuilder)
                 .build();
         SearchHits<EsDemo> search = elasticsearchTemplate.search(nativeSearchQuery, EsDemo.class);
@@ -158,7 +189,6 @@ public class ElasticSearchController {
 //        aggregations
 //        Aggregation date = aggregations.get("date");
 //        Map<String, Object> metadata = date.getMetadata();
-        Long id = IdUtils.getId();
         return collect;
 
     }
@@ -180,5 +210,20 @@ public class ElasticSearchController {
 //        prohibitQuery.must(in);
         return prohibitQuery;
     }
-    
+
+    /**
+     * 测试list term是否管用
+     * result: 管用，正常查出来
+     * */
+    @PostMapping("/selectTermList")
+    List<EsDemo> selectTermList() {
+        BoolQueryBuilder typeQuery = QueryBuilders.boolQuery();
+        typeQuery.should(QueryBuilders.termQuery("allowList", 1));
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                            .withQuery(typeQuery)
+                            .build();
+        SearchHits<EsDemo> search = elasticsearchTemplate.search(nativeSearchQuery, EsDemo.class);
+        List<EsDemo> collect = search.getSearchHits().stream().map(x -> x.getContent()).collect(Collectors.toList());
+        return collect;
+    }
 }
